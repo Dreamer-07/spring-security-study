@@ -1,0 +1,59 @@
+server:
+  port: 9999
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 开启从注册中心动态创建路由的功能
+          lower-case-service-id: true # 使用小写服务名，默认是大写
+      routes:
+        # 配置认证服务器
+        - id: cloud-oauth-server
+          uri: lb://cloud-auth-server
+          predicates:
+            - Path=/oauth/token,/oauth/authorize,/login,/logout
+          filters:
+            - PreserveHostHeader
+        - id: cloud-auth-server
+          uri: lb://cloud-auth-server
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+        # 配置 api 接口服务
+        - id: cloud-api
+          uri: lb://cloud-api
+          # StripPrefix 表示转发与请求的路径去掉一个前缀: /api/client/xxx(客户端请求) -> /client/xxx(实际转发请求)
+          predicates:
+            - Path=/api/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-services
+          uri: lb://cloud-services
+          predicates:
+            - Path=/services/**
+          filters:
+            - StripPrefix=1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8000/rsa/publicKey'
+          
+  redis:
+    database: 0
+    port: 6379
+    host: 192.168.127.137
+    password:
+secure:
+  ignore:
+    urls: # 配置白名单路径
+      - "/oauth/token"
+      - "/oauth/authorize"
+      - "/login"
+      - "/logout"

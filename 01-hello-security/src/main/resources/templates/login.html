@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- action 表单提交的地址必须是刚刚配置的 loginProcessingUrl 的值且提交方式为 POST -->
+    <form action="/login" method="post">
+        <!-- name 值必须分别为 username & password -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="text" name="username"/><br/>
+        <input type="text" name="password"/><br/>
+        <!-- 添加一个 checkbox 用于实现自动登录功能，name 值必须为 remember-me -->
+        <input type="checkbox" name="remember-me"/><br/>
+        <input type="submit" value="提交"/><br/>
+    </form>
+</body>
+</html>

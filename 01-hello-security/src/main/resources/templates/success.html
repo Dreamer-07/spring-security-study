@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>success</title>
+</head>
+<body>
+    <span>登录成功！ </span><br />
+    <span th:text="'对应的 csrfToken 令牌:' + ${_csrf.token}"></span>
+    <!-- 配置退出链接 -->
+    <a href="/logout">退出</a>
+</body>
+</html>
